@@ -10,6 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: mkdir cobol85 tests
-      - run: cd cobol85 tests
+      - run: cd cobol85 
       - run: pwd
 
