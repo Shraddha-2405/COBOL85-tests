@@ -1,15 +1,42 @@
 # This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
 # For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
 
-name: execute-pwd
+name: NIST COBOL85 tests
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'develop/**'
+      - 'issue/**'
+  pull_request:
+    types: [opened, reopened, review_requested]
+
 jobs:
-  checks-bats-version:
+  NIST-COBOL85-tests:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: mkdir cobol85 tests
-      - run: cd cobol85 
-      - run: pwd
-
+     
+     steps:
+          - name: Download and Build NIST COBOL85 tests
+          run: |
+             https://www.itl.nist.gov/div897/ctg/cobol_form.htm
+             uncompress newcob.val.Z
+            
+          - name: Cache opnesource COBOL v1.5.2J
+               id: opensource_cobol_cache_id
+        uses: actions/cache@v2
+        with:
+          path: opensource-cobol-1.5.2J
+          key: opensource-cobol-1.5.2J-key
+          
+      - name: Install opensource COBOL v1.5.2J
+        run: |
+            cd opensource-cobol/vbisam
+            ./configure --prefix=/usr/
+            make
+            sudo make install
+            cd ../
+            ./configure --prefix=/usr/ --with-vbisam
+            make
+            sudo make install
